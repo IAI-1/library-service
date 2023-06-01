@@ -1,5 +1,5 @@
-import getenv from '../getenv.js';
 import jwt from 'jsonwebtoken';
+import getenv from './getenv.js';
 
 const TOKEN_SECRET = getenv('TOKEN_SECRET');
 

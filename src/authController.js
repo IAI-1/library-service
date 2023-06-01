@@ -1,11 +1,13 @@
 import bcrypt from 'bcrypt';
-import generateAccessToken from '../helpers/auth/generateAccessToken.js';
-import { successResponseBuilder } from '../helpers/responseBuilder.js';
-import User from '../models/usersModel.js';
+import generateAccessToken from './helpers/generateAccessToken.js';
+import { successResponseBuilder } from './helpers/responseBuilder.js';
+import User from './userModel.js';
 
 export const signupAdmin = async (req, res, next) => {
   try {
     const { email, password, name } = req.body;
+
+    console.log(email, password, name);
 
     const encryptedPassword = await bcrypt.hash(password, 10);
 
@@ -16,11 +18,15 @@ export const signupAdmin = async (req, res, next) => {
       role: 'ADMIN',
     });
 
+    console.log(1);
+
     const token = generateAccessToken({
       id: user._id,
       email,
-      isAdmin: true,
+      role: 'ADMIN',
     });
+
+    console.log(2);
 
     res
       .status(201)
@@ -113,7 +119,7 @@ export const signin = async (req, res, next) => {
     const token = generateAccessToken({
       id: user._id,
       email,
-      isAdmin: user.role === 'ADMIN',
+      role: user.role,
     });
 
     res
@@ -123,11 +129,3 @@ export const signin = async (req, res, next) => {
     next(err);
   }
 };
-
-// export const signout = async (req, res, next) => {
-//   try {
-//     res.clearCookie('access_token').status(200).json(successResponseBuilder());
-//   } catch (err) {
-//     next(err);
-//   }
-// };

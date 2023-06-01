@@ -1,27 +1,32 @@
-import process from 'process';
-import express from 'express';
-import cors from 'cors';
-import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
 import fileUpload from 'express-fileupload';
+import mongoose from 'mongoose';
+import process from 'process';
 
 import getenv from './src/helpers/getenv.js';
 import errorHandler from './src/middlewares/errorHandler.js';
-import requestLogger from './src/middlewares/requestLogger.js';
-// import { BASEURL } from './src/helpers/constants.js';
 
-import borrowsRouter from './src/routes/borrowsRoute.js';
-import authRouter from './src/routes/authRoute.js';
-import booksRouter from './src/routes/booksRoute.js';
-import usersRouter from './src/routes/usersRoute.js';
+import authRouter from './src/authRoute.js';
+// import booksRouter from './src/routes/booksRoute.js';
+// import borrowsRouter from './src/routes/borrowsRoute.js';
+// import usersRouter from './src/routes/usersRoute.js';
 
 const app = express();
 
 const PORT = process.env.PORT;
 const MONGO_URI = getenv('MONGO_URI');
 
+const connectionOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  authSource: 'admin', // Optional, depending on your MongoDB setup
+};
+
+mongoose.set('strictQuery', true);
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGO_URI, connectionOptions)
   .then(() => console.log('Connected to mongodb'))
   .catch((err) => {
     console.error(`Can't connect to mongodb`);
@@ -36,17 +41,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload({ limits: 10 * 1024 * 1024 }));
 app.use(express.static('public'));
 
-app.use(requestLogger);
-
 app.get('/', (req, res) => {
-  res.send('halo dari kelompok 2');
+  res.send('auth service');
 });
 
 app.use('/auth', authRouter);
-app.use('/books', booksRouter);
-app.use('/borrows', borrowsRouter);
-app.use('/users', usersRouter);
+// app.use('/books', booksRouter);
+// app.use('/borrows', borrowsRouter);
+// app.use('/users', usersRouter);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.info(`Server running on ${BASEURL}`));
+app.listen(PORT, () => console.info(`Auth Service running on port ${PORT}`));

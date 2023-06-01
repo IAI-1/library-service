@@ -18,12 +18,8 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       required: true,
-      enum: ['USER', 'ADMIN'],
-      default: 'USER',
-    },
-    borrowedBookIds: {
-      type: [mongoose.Types.ObjectId],
-      required: false,
+      enum: ['STUDENT', 'ADMIN'],
+      default: 'STUDENT',
     },
   },
   { timestamps: true }
