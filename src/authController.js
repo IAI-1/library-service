@@ -7,8 +7,6 @@ export const signupAdmin = async (req, res, next) => {
   try {
     const { email, password, name } = req.body;
 
-    console.log(email, password, name);
-
     const encryptedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
@@ -18,15 +16,11 @@ export const signupAdmin = async (req, res, next) => {
       role: 'ADMIN',
     });
 
-    console.log(1);
-
     const token = generateAccessToken({
       id: user._id,
       email,
       role: 'ADMIN',
     });
-
-    console.log(2);
 
     res
       .status(201)
