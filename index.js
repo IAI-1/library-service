@@ -8,10 +8,8 @@ import process from 'process';
 import getenv from './src/helpers/getenv.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 
-import authRouter from './src/authRoute.js';
-// import booksRouter from './src/routes/booksRoute.js';
-// import borrowsRouter from './src/routes/borrowsRoute.js';
-// import usersRouter from './src/routes/usersRoute.js';
+import bookRoute from './src/bookRoute.js';
+import borrowRoute from './src/borrowRoute.js';
 
 const app = express();
 
@@ -42,14 +40,12 @@ app.use(fileUpload({ limits: 10 * 1024 * 1024 }));
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.send('auth service');
+  res.send('library service');
 });
 
-app.use('/auth', authRouter);
-// app.use('/books', booksRouter);
-// app.use('/borrows', borrowsRouter);
-// app.use('/users', usersRouter);
+app.use('/library/books', bookRoute);
+app.use('/library/borrows', borrowRoute);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.info(`Auth Service running on port ${PORT}`));
+app.listen(PORT, () => console.info(`Library Service running on port ${PORT}`));
